@@ -18,6 +18,7 @@ jobs:
       - run: node devforum-to-discord.mjs
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK_2: ${{ secrets.DISCORD_WEBHOOK_2 }}
       - name: Save state
         run: |
           git config user.name "github-actions[bot]"
