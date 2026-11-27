@@ -7,6 +7,7 @@ const STATE = "state.json";
 const HEADERS = { "User-Agent": "devforum-discord-relay/1.0", Accept: "application/json" };
 
 const ICON = "https://devforum.roblox.com/user_avatar/devforum.roblox.com/roblox/120/4100645_2.png";
+const WATERMARK = "Bot by Avxsed";
 const CATEGORIES = { 36: "Announcements", 62: "Release Notes", 90: "Community & Events" };
 
 // urutan = prioritas. [tag, emoji, warna]
@@ -174,7 +175,7 @@ for (const t of fresh) {
     color,
     fields,
     image: images[0] ? { url: images[0] } : undefined,
-    footer: { text: `Roblox Developer Forum • ${category}`, icon_url: ICON },
+    footer: { text: `Roblox Developer Forum • ${category} • ${WATERMARK}`, icon_url: ICON },
     timestamp: t.created_at,
   };
   // embed dengan url yang sama otomatis digabung Discord jadi galeri gambar
