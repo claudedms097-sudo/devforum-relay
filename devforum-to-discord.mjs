@@ -1,6 +1,10 @@
 import fs from "node:fs";
 
-const WEBHOOK = process.env.DISCORD_WEBHOOK;
+const WEBHOOKS = [
+  process.env.DISCORD_WEBHOOK,
+  process.env.DISCORD_WEBHOOK_2,
+  process.env.DISCORD_WEBHOOK_3,
+].filter(Boolean);
 const FEED = process.env.FEED_URL ?? "https://devforum.roblox.com/c/updates/announcements/36.json";
 const BASE = "https://devforum.roblox.com";
 const STATE = "state.json";
@@ -120,10 +124,10 @@ async function getPost(id) {
   };
 }
 
-async function send(payload) {
+async function postOne(hook, payload) {
   let r;
   for (let i = 0; i < 3; i++) {
-    r = await fetch(WEBHOOK, {
+    r = await fetch(hook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -133,6 +137,17 @@ async function send(payload) {
     await sleep(wait * 1000 + 250);
   }
   return r;
+}
+
+async function send(payload) {
+  const results = [];
+  for (const hook of WEBHOOKS) {
+    const r = await postOne(hook, payload);
+    if (!r.ok) console.error("Webhook gagal:", r.status, await r.clone().text().catch(() => ""));
+    results.push(r);
+    await sleep(500);
+  }
+  return results.find(r => r.ok) ?? results[results.length - 1];
 }
 
 const res = await fetch(`${FEED}?order=created`, { headers: HEADERS });
